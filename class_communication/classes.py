@@ -2,14 +2,6 @@
 # coding=utf-8
 from decorators import *
 
-# template for uses
-class UseCase:
-    def __init__(self):
-        self._ds = ds
-
-    def execute(self):
-        pass
-
 # MetaClass Containing Operations
 class Operations:
 
