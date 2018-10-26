@@ -49,14 +49,15 @@ class ParallelNpArray(object):
         result_queue.put(result)
 
     @staticmethod
-    # @DebugDecorator.PrintArgs
+   #@PrintReturn
     def prepare_slices(x_list, mp):
         """returns appropriate slices for worker"""
         l_shape = np.shape(x_list)
         if mp.num_procs > 1:
-            len_slice = l_shape[0] % (mp.num_procs - 1)
+            len_slice = l_shape[0] // (mp.num_procs - 1)
         else:
             len_slice = l_shape[0]
+        len_slice = max(len_slice, 1)
         slices = []
         for proc in range(mp.num_procs):
             slices.append(slice(proc * len_slice, (proc + 1) * len_slice))
