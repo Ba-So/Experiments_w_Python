@@ -64,13 +64,26 @@ class ParallelNpArray(object):
 
 # @DebugDecorator.PrintReturn
 # @DebugDecorator.PrintArgs
-def shared_array_1D(shape):
+def shared_np_array(shape):
+    """Form shared memory 1D numpy array"""
+    from multiprocessing import Array
+    arr_len = np.product(shape)
+    shared_array_base = Array(ctypes.c_double, arr_len)
+    shared_array = np.ctypeslib.as_array(shared_array_base.get_obj())
+    shared_array = shared_array.reshape(*shape)
+    return shared_array
+
+def shared_array_1D_altern(shape):
     """Form shared memory 1D numpy array"""
     from multiprocessing import Array
     shared_array_base = Array(ctypes.c_double, shape[0])
     shared_array = np.ctypeslib.as_array(shared_array_base.get_obj())
     shared_array = shared_array.reshape(*shape)
     return shared_array
+
+
+
+
 
 
 

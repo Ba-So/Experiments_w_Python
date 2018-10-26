@@ -3,7 +3,7 @@
 import numpy as np
 from multiprocessing import Process, Array, Queue
 from debugdecorators import TimeThis, PrintArgs, PrintReturn
-from paralleldecorators import Mp, ParallelNpArray, shared_array_1D
+from paralleldecorators import Mp, ParallelNpArray, shared_np_array
 
 mp = Mp(8, False)
 
@@ -32,7 +32,7 @@ class DataStack(object):
         data_list = []
         for i in range(self.num_sets):
             data_list.append(i)
-        shrd_list = shared_array_1D([self.num_sets])
+        shrd_list = shared_array_1D_altern([self.num_sets])
         shrd_list[:] = data_list[:]
         setattr(self, name, shrd_list)
 
