@@ -31,8 +31,9 @@ class DataStack(object):
     def prepare(self, name):
         data_list = []
         for i in range(self.num_sets):
-            data_list.append(i)
-        shrd_list = shared_array_1D_altern([self.num_sets])
+            data_list.append([i, i])
+        data_list = np.array(data_list)
+        shrd_list = shared_np_array(np.shape(data_list))
         shrd_list[:] = data_list[:]
         setattr(self, name, shrd_list)
 
@@ -47,19 +48,22 @@ class DataStack(object):
 if __name__ == '__main__':
 
     states = [False, True]
-    for j in [10, 100, 1000, 10000, 100000, 1000000, 10000000]:
+    for j in [10]: #, 100, 1000, 10000, 100000, 1000000, 10000000]:
+        print("number of elements {}".format(j))
         for state in states:
             print(mp.switch)
             if mp.switch:
-                for num_procs in [2,4,8,16]:
+                for num_procs in [2, 4, 8, 16]:
                     print("procs: {}".format(num_procs))
                     mp.change_num_procs(num_procs)
                     ds = DataStack(j)
                     ds.execute()
+                    ds.print_all()
                 mp.toggle_switch()
             else:
                 ds = DataStack(j)
                 ds.execute()
                 mp.toggle_switch()
+                ds.print_all()
 
 
