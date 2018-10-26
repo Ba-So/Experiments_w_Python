@@ -2,12 +2,13 @@
 # coding=utf-8
 import numpy as np
 from multiprocessing import Process, Array, Queue
-from decorators import ParallelDecorator, DebugDecorator
+from debugdecorators import TimeThis, PrintArgs, PrintReturn
+from paralleldecorators import Mp, ParallelNpArray, shared_array_1D
 
-mp = ParallelDecorator.Mp(8, False)
+mp = Mp(8, False)
 
-@DebugDecorator.time_this
-@ParallelDecorator.parallel_np_array(mp)
+@TimeThis
+@ParallelNpArray(mp)
 def add_arrays(a, b):
     result = []
     for i, x_a in enumerate(a):
@@ -31,7 +32,7 @@ class DataStack(object):
         data_list = []
         for i in range(self.num_sets):
             data_list.append(i)
-        shrd_list = ParallelDecorator.parallel_np_array.shared_array_1D([self.num_sets])
+        shrd_list = shared_array_1D([self.num_sets])
         shrd_list[:] = data_list[:]
         setattr(self, name, shrd_list)
 
@@ -46,12 +47,19 @@ class DataStack(object):
 if __name__ == '__main__':
 
     states = [False, True]
-    for j in [10, 100, 1000, 10000, 100000, 1000000]:
+    for j in [10, 100, 1000, 10000, 100000, 1000000, 10000000]:
         for state in states:
             print(mp.switch)
-            ds = DataStack(j)
-            ds.execute()
-           #ds.print_all()
-            mp.toggle_switch()
+            if mp.switch:
+                for num_procs in [2,4,8,16]:
+                    print("procs: {}".format(num_procs))
+                    mp.change_num_procs(num_procs)
+                    ds = DataStack(j)
+                    ds.execute()
+                mp.toggle_switch()
+            else:
+                ds = DataStack(j)
+                ds.execute()
+                mp.toggle_switch()
 
 
