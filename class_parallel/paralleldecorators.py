@@ -33,7 +33,9 @@ class ParallelNpArray(object):
                     p.run()
                 results = []
                 for i, p in enumerate(processes):
-                    results.append(result_queue[i].get())
+                    res = result_queue[i].get()
+                    if res:
+                        results += res
                     #p.join()
                 return results
             else:
